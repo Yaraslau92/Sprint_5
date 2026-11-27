@@ -1,5 +1,3 @@
-
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -8,67 +6,60 @@ from locators import (
     EMAIL_INPUT,
     PASSWORD_INPUT,
     REGISTER_BUTTON,
-    LOGIN_FROM_HOME_BUTTON
+    LOGIN_FROM_HOME_BUTTON,
+    REGISTER_LINK,
+    PASSWORD_ERROR_MESSAGE,
+    LOGIN_PAGE_MARKER
 )
 
 from helpers import generate_email, generate_password
+from urls import BASE_URL, REGISTER_URL
 
 
-# Успешная регистрация
-def test_registration_success(driver):
-    driver.get("https://stellarburgers.education-services.ru/")
+class TestRegistration:
 
-    wait = WebDriverWait(driver, 10)
+    # Проверка успешной регистрации
+    def test_registration_success(self, driver):
+        driver.get(BASE_URL)
 
-    # Открываем страницу входа
-    wait.until(
-        EC.element_to_be_clickable(LOGIN_FROM_HOME_BUTTON)
-    ).click()
+        wait = WebDriverWait(driver, 10)
 
-    # Переходим к регистрации
-    wait.until(
-        EC.element_to_be_clickable(
-            (By.XPATH, "//a[contains(text(), 'Зарегистрироваться')]")
-        )
-    ).click()
+        wait.until(
+            EC.element_to_be_clickable(LOGIN_FROM_HOME_BUTTON)
+        ).click()
 
-    # Заполняем форму регистрации
-    wait.until(
-        EC.visibility_of_element_located(NAME_INPUT)
-    ).send_keys("Yaroslav")
+        wait.until(
+            EC.element_to_be_clickable(REGISTER_LINK)
+        ).click()
 
-    driver.find_element(*EMAIL_INPUT).send_keys(generate_email())
-    driver.find_element(*PASSWORD_INPUT).send_keys(generate_password())
+        wait.until(
+            EC.visibility_of_element_located(NAME_INPUT)
+        ).send_keys("Yaroslav")
 
-    # Нажимаем кнопку регистрации
-    driver.find_element(*REGISTER_BUTTON).click()
+        driver.find_element(*EMAIL_INPUT).send_keys(generate_email())
+        driver.find_element(*PASSWORD_INPUT).send_keys(generate_password())
 
-    # Проверяем переход на страницу входа
-    wait.until(EC.url_contains("/login"))
+        driver.find_element(*REGISTER_BUTTON).click()
 
+        assert wait.until(
+            EC.visibility_of_element_located(LOGIN_PAGE_MARKER)
+        ).is_displayed()
 
-# Проверка регистрации с коротким паролем
-def test_registration_with_short_password(driver):
-    driver.get("https://stellarburgers.education-services.ru/register")
+    # Проверка регистрации с коротким паролем
+    def test_registration_with_short_password(self, driver):
+        driver.get(REGISTER_URL)
 
-    wait = WebDriverWait(driver, 10)
+        wait = WebDriverWait(driver, 10)
 
-    # Заполняем форму регистрации
-    wait.until(
-        EC.visibility_of_element_located(NAME_INPUT)
-    ).send_keys("Yaroslav")
+        wait.until(
+            EC.visibility_of_element_located(NAME_INPUT)
+        ).send_keys("Yaroslav")
 
-    driver.find_element(*EMAIL_INPUT).send_keys(generate_email())
-    driver.find_element(*PASSWORD_INPUT).send_keys("12345")
+        driver.find_element(*EMAIL_INPUT).send_keys(generate_email())
+        driver.find_element(*PASSWORD_INPUT).send_keys("12345")
 
-    # Нажимаем кнопку регистрации
-    driver.find_element(*REGISTER_BUTTON).click()
+        driver.find_element(*REGISTER_BUTTON).click()
 
-    # Проверяем сообщение об ошибке
-    error_message = wait.until(
-        EC.visibility_of_element_located(
-            (By.XPATH, "//*[contains(text(), 'Некорректный пароль')]")
-        )
-    )
-
-    assert error_message.is_displayed()
+        assert wait.until(
+            EC.visibility_of_element_located(PASSWORD_ERROR_MESSAGE)
+        ).is_displayed()
