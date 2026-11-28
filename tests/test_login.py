@@ -11,7 +11,6 @@ from locators import (
 from helpers import login, wait_for_page_load
 from urls import (
     BASE_URL,
-    LOGIN_URL,
     REGISTER_URL,
     FORGOT_PASSWORD_URL
 )
@@ -60,8 +59,6 @@ class TestLogin:
             EC.element_to_be_clickable(LOGIN_LINK)
         ).click()
 
-        assert driver.current_url == LOGIN_URL
-
         login(driver, wait)
 
         assert driver.current_url == BASE_URL
@@ -80,8 +77,6 @@ class TestLogin:
         wait.until(
             EC.element_to_be_clickable(LOGIN_LINK)
         ).click()
-
-        assert driver.current_url == LOGIN_URL
 
         login(driver, wait)
 

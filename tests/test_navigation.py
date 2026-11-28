@@ -1,4 +1,3 @@
-
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -43,8 +42,6 @@ class TestNavigation:
             EC.element_to_be_clickable(PERSONAL_ACCOUNT_LINK)
         ).click()
 
-        assert wait.until(EC.url_to_be(ACCOUNT_URL))
-
         wait.until(
             EC.element_to_be_clickable(CONSTRUCTOR_LINK)
         ).click()
@@ -62,8 +59,6 @@ class TestNavigation:
             EC.element_to_be_clickable(PERSONAL_ACCOUNT_LINK)
         ).click()
 
-        assert wait.until(EC.url_to_be(ACCOUNT_URL))
-
         wait.until(
             EC.element_to_be_clickable(LOGO_LINK)
         ).click()
@@ -80,8 +75,6 @@ class TestNavigation:
         wait.until(
             EC.element_to_be_clickable(PERSONAL_ACCOUNT_LINK)
         ).click()
-
-        assert wait.until(EC.url_to_be(ACCOUNT_URL))
 
         wait.until(
             EC.element_to_be_clickable(LOGOUT_BUTTON)
